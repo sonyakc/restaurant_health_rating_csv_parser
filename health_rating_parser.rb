@@ -27,7 +27,7 @@ def parse_ratings_csv
 	begin
 		all_ratings = SmarterCSV.process(ratings_file, col_sep: '"",')
 		# puts all_ratings.class Array
-		# all_ratings.each{ |x| ratings_coll.insert x }
+		all_ratings.each{ |x| ratings_coll.insert x } # insert into mongo
 		puts all_ratings[5001]
 	rescue EOFError
 		p 'got an error'
