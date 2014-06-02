@@ -10,7 +10,7 @@ def database_connection
 	client = MongoClient.new # defaults to localhost:27017 db = client[‘example-db’] coll = db[‘example-collection’]
 	db   = client.db 'health' 
 	db.drop_collection 'ratings'
-	ratings_coll = db.create_collection 'ratings'
+	@ratings_coll = db.create_collection 'ratings'
 end
 
 def parse_ratings_csv
@@ -25,16 +25,20 @@ def parse_ratings_csv
 
 	# load data to Mongo
 	begin
-		all_ratings = SmarterCSV.process(ratings_file, col_sep: '"",')
+		all_ratings = SmarterCSV.process(ratings_file, col_sep: '""')
 		# puts all_ratings.class Array
-		all_ratings.each{ |x| ratings_coll.insert x } # insert into mongo
+		all_ratings.each{ |x| @ratings_coll.insert(x) } # insert into mongo
 		puts all_ratings[5001]
 	rescue EOFError
 		p 'got an error'
 	end
 	ratings_file.close
+	# ratings_coll.update( { _id: @id }, { $unset: { '","': true } }, { multi: true } );
 	p "done loading data"
 end
+
+# run in mongo shell to remove "," column
+# db.ratings.update ({}, {$unset: { ",":""}},{multi:true})
 
 # Usage
 database_connection()
