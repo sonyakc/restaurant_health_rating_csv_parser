@@ -33,8 +33,11 @@ def parse_ratings_csv
 		p 'got an error'
 	end
 	ratings_file.close
+
+	ratings_coll.create_index("currentrating")
+	ratings_coll.create_index("dba")
 	# ratings_coll.update( { _id: @id }, { $unset: { '","': true } }, { multi: true } );
-	p "done loading data"
+	p "done parsing and loading to mongo"
 end
 
 # run in mongo shell to remove "," column
